@@ -5,7 +5,7 @@
 This project implements a High-Level Synthesis (HLS) pipeline that converts Control Data Flow Graphs (CDFG) into synthesizable VHDL. It automates the transition from behavioral models to register-transfer level (RTL) hardware.
 
 ## Reference
-This work builds upon the assignments from the **[hlsw26](../hlsw26)** course material.
+This work builds upon the assignments from the **[hlsw26](https://bitbucket.org/cdubach/hlsw26)** course material.
 
 ## Project Summary & Contributions
 
