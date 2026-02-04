@@ -33,6 +33,12 @@ class VHDLGenerator:
             if hasattr(node, 'mem') and hasattr(node.mem, 'name') and hasattr(node.mem, 'size'):
                 self.mem_sizes[node.mem.name] = node.mem.size
         
+        self.mux_widths = {}
+        for mux in self.datapath.muxes:
+            # Calculate bits needed: ceil(log2(n)). At least 1 bit.
+            width = max(1, (len(mux.inputs) - 1).bit_length()) if mux.inputs else 1
+            self.mux_widths[mux.name] = width
+            
         self.state_bits = (self.max_time + 2).bit_length()
         
     def _addr_bits(self, size):
@@ -96,7 +102,8 @@ class VHDLGenerator:
         # Mux signals
         L.append("    -- Multiplexer signals")
         for mux in self.datapath.muxes:
-            L.append(f"    signal {mux.name}_sel : STD_LOGIC_VECTOR(3 downto 0);")
+            width = self.mux_widths[mux.name]
+            L.append(f"    signal {mux.name}_sel : STD_LOGIC_VECTOR({width - 1} downto 0);")
             L.append(f"    signal {mux.name}_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');")
         L.append("")
         
@@ -190,7 +197,8 @@ class VHDLGenerator:
                 if op == 'write':
                     L.append(f"                {mem}_we <= '1';")
             for mux, sel in sig['mux_selects'].items():
-                L.append(f"                {mux}_sel <= std_logic_vector(to_unsigned({sel}, 4));")
+                width = self.mux_widths[mux]
+                L.append(f"                {mux}_sel <= std_logic_vector(to_unsigned({sel}, {width}));")
             if not sig['reg_enables'] and not sig['mem_ops'] and not sig['mux_selects']:
                 L.append("                null;")
         L.append("            when others => null;")
@@ -226,15 +234,14 @@ class VHDLGenerator:
         
         # Mux logic (std_logic_vector)
         L.append("    -- Multiplexers")
-
         for mux in self.datapath.muxes:
             if not mux.inputs:
                 continue
+            width = self.mux_widths[mux.name]
             L.append(f"    with {mux.name}_sel select")
             L.append(f"        {mux.name}_out <=")
             for i, inp in enumerate(mux.inputs):
-                val = f"{i:04b}"  # Convert integer index 0,1,2,3... to binary
-                L.append(f"            {inp.name}_out when \"{val}\",")
+                L.append(f"            {inp.name}_out when \"{i:0{width}b}\",")
             L.append("            (others => '0') when others;")
         
         # Memory connections (both read and write address from same mux)
