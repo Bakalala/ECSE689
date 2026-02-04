@@ -33,13 +33,10 @@ class Datapath:
         
         # Insert Muxes where needed
         for (res, label), registers in port_inputs.items():
-            if len(registers) >= 1:
-                mux = Multiplexer("Mux_{}_{}".format(res.name, label), registers)
-                self.muxes.append(mux)
-                self.edges.append((mux, res, label))
-                for reg in registers:
-                    self.edges.append((reg, mux, "in"))
-            else:
-                for reg in registers:
-                    self.edges.append((reg, res, label))
+            mux = Multiplexer("Mux_{}_{}".format(res.name, label), registers)
+            self.muxes.append(mux)
+            self.edges.append((mux, res, label))
+            for reg in registers:
+                self.edges.append((reg, mux, "in"))
+
  
