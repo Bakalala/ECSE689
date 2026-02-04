@@ -5,14 +5,13 @@ Uses external components: dual_port_RAM.vhdl, adder.vhdl, multiplier.vhdl
 """
 
 class VHDLGenerator:
-    def __init__(self, fsm_generator, datapath, resource_allocator, register_allocator, data_width=32):
+    def __init__(self, fsm_generator, datapath, resource_allocator, register_allocator):
         self.fsm = fsm_generator
         self.datapath = datapath
         self.resource_allocator = resource_allocator
         self.register_allocator = register_allocator
         self.control = fsm_generator.control_by_state
         self.max_time = fsm_generator.max_time
-        self.data_width = data_width
         self._collect_signals()
 
     def _collect_signals(self):
@@ -30,9 +29,10 @@ class VHDLGenerator:
             for mux_name in signals['mux_selects']:
                 self.all_mux_selects.add(mux_name)
         
-        for node in self.fsm.schedule.keys():
-            if hasattr(node, 'mem') and hasattr(node.mem, 'name') and hasattr(node.mem, 'size'):
-                self.mem_sizes[node.mem.name] = node.mem.size
+                self.all_mux_selects.add(mux_name)
+        
+        # Get memory sizes from resource allocator instead of rescanning
+        self.mem_sizes = self.resource_allocator.mem_sizes
         
         self.mux_widths = {}
         for mux in self.datapath.muxes:
@@ -66,7 +66,7 @@ class VHDLGenerator:
         L.append("")
         
         # Constants
-        L.append(f"    constant DATA_WIDTH : integer := {self.data_width};")
+        L.append("    constant DATA_WIDTH : integer := 32;")
         L.append("")
         
         # Sort helper for register names

@@ -27,6 +27,7 @@ class ResourceAllocator:
         self.schedule = schedule
         self.resource_allocation = defaultdict(list)
         self.available_resources = defaultdict(list)
+        self.mem_sizes = {}
         self.total_resources = 0
         self.add_count = 0
         self.mul_count = 0
@@ -67,6 +68,7 @@ class ResourceAllocator:
                         # What to do with inputs and outputs?
                         resource = Resource(node.mem.name, type(node.mem))
                         self.total_resources += 1
+                        self.mem_sizes[node.mem.name] = node.mem.size
                         # Add resource to available resources dic for future use
                         self.available_resources[node.mem.name].append(resource)
                         # Allocate resource to node
