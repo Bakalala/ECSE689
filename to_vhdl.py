@@ -28,23 +28,22 @@ class VHDLGenerator:
                 self.all_mems.add(mem_name)
             for mux_name in signals['mux_selects']:
                 self.all_mux_selects.add(mux_name)
-        
-                self.all_mux_selects.add(mux_name)
-        
+                
         # Get memory sizes from resource allocator instead of rescanning
         self.mem_sizes = self.resource_allocator.mem_sizes
         
         self.mux_widths = {}
         for mux in self.datapath.muxes:
-            # Calculate bits needed: ceil(log2(n)). At least 1 bit.
-            width = max(1, (len(mux.inputs) - 1).bit_length()) if mux.inputs else 1
+            # Need a minus one since bit_length doesnt account for 0 index.
+            width = self._bits_needed(len(mux.inputs)) if mux.inputs else 1
             self.mux_widths[mux.name] = width
             
+        # from 0 to max_time (that needs a +1) + end state
         self.state_bits = (self.max_time + 2).bit_length()
         
-    def _addr_bits(self, size):
-        """Calculate address bits needed for given size."""
-        return max(1, (size - 1).bit_length())
+    def _bits_needed(self, count):
+        """Calculate bits needed to represent 'count' items (0 to count-1)."""
+        return max(1, (count - 1).bit_length())
 
     def _vhdl_header(self):
         lines = ["library IEEE;", "use IEEE.STD_LOGIC_1164.ALL;", "use IEEE.NUMERIC_STD.ALL;"]
@@ -92,7 +91,7 @@ class VHDLGenerator:
         L.append("    -- Memory signals")
         for mem in sorted(self.all_mems):
             size = self.mem_sizes.get(mem, 16)
-            addr_bits = self._addr_bits(size)
+            addr_bits = self._bits_needed(size)
             L.append(f"    signal {mem}_we : STD_LOGIC;")
             L.append(f"    signal {mem}_addr_wr : STD_LOGIC_VECTOR({addr_bits-1} downto 0);")
             L.append(f"    signal {mem}_addr_rd : STD_LOGIC_VECTOR({addr_bits-1} downto 0);")
@@ -139,7 +138,7 @@ class VHDLGenerator:
         L.append("    -- Memory instances (dual_port_RAM)")
         for mem in sorted(self.all_mems):
             size = self.mem_sizes.get(mem, 16)
-            addr_bits = self._addr_bits(size)
+            addr_bits = self._bits_needed(size)
             L.append(f"    {mem}_RAM: entity work.dual_port_RAM")
             L.append(f"        generic map (addr_width => {addr_bits}, data_width => DATA_WIDTH, INIT_FILE => \"{mem}_content.txt\")")
             L.append(f"        port map (clk => clk, we => {mem}_we, addr_wr => {mem}_addr_wr, addr_rd => {mem}_addr_rd, din => {mem}_din, dout => {mem}_dout);")
@@ -249,7 +248,7 @@ class VHDLGenerator:
         L.append("    -- Memory connections")
         for mem in sorted(self.all_mems):
             size = self.mem_sizes.get(mem, 16)
-            addr_bits = self._addr_bits(size)
+            addr_bits = self._bits_needed(size)
             addr_mux = f"Mux_{mem}_addr"
             data_mux = f"Mux_{mem}_data"
             if addr_mux in self.all_mux_selects:
