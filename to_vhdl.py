@@ -226,12 +226,16 @@ class VHDLGenerator:
         
         # Mux logic (std_logic_vector)
         L.append("    -- Multiplexers")
+
         for mux in self.datapath.muxes:
             if not mux.inputs:
                 continue
-            cases = [f'{inp.name}_out when {mux.name}_sel = "{i:04b}"' for i, inp in enumerate(mux.inputs)]
-            L.append(f"    {mux.name}_out <= " + " else ".join(cases) + " else (others => '0');")
-        L.append("")
+            L.append(f"    with {mux.name}_sel select")
+            L.append(f"        {mux.name}_out <=")
+            for i, inp in enumerate(mux.inputs):
+                val = f"{i:04b}"  # Convert integer index 0,1,2,3... to binary
+                L.append(f"            {inp.name}_out when \"{val}\",")
+            L.append("            (others => '0') when others;")
         
         # Memory connections (both read and write address from same mux)
         L.append("    -- Memory connections")
