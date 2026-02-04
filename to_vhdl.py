@@ -5,13 +5,14 @@ Uses external components: dual_port_RAM.vhdl, adder.vhdl, multiplier.vhdl
 """
 
 class VHDLGenerator:
-    def __init__(self, fsm_generator, datapath, resource_allocator, register_allocator):
+    def __init__(self, fsm_generator, datapath, resource_allocator, register_allocator, data_width=32):
         self.fsm = fsm_generator
         self.datapath = datapath
         self.resource_allocator = resource_allocator
         self.register_allocator = register_allocator
         self.control = fsm_generator.control_by_state
         self.max_time = fsm_generator.max_time
+        self.data_width = data_width
         self._collect_signals()
 
     def _collect_signals(self):
@@ -65,7 +66,7 @@ class VHDLGenerator:
         L.append("")
         
         # Constants
-        L.append("    constant DATA_WIDTH : integer := 32;")
+        L.append(f"    constant DATA_WIDTH : integer := {self.data_width};")
         L.append("")
         
         # Sort helper for register names
