@@ -15,7 +15,7 @@ def main():
     print("--- Test 0: RAM[3] = RAM[0] * RAM[1] + RAM[2] ---")
     
     # 1. Define Memory
-    ram = Mem(size=1024, name="RAM")
+    ram = Mem(size=4, name="RAM")
     
     # 2. Build the AST
     # RAM[3] = RAM[0] * RAM[1] + RAM[2]

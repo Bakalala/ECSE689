@@ -27,7 +27,7 @@ class ResourceAllocator:
         self.schedule = schedule
         self.resource_allocation = defaultdict(list)
         self.available_resources = defaultdict(list)
-        self.mem_sizes = {}
+        self.mem_sizes = {} # Helps with to VHDL
         self.total_resources = 0
         self.add_count = 0
         self.mul_count = 0
@@ -65,7 +65,6 @@ class ResourceAllocator:
                         self.resource_allocation[node] = resource
                     else:
                         # Create new resource since none are available
-                        # What to do with inputs and outputs?
                         resource = Resource(node.mem.name, type(node.mem))
                         self.total_resources += 1
                         self.mem_sizes[node.mem.name] = node.mem.size

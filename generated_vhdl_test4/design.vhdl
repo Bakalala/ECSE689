@@ -1,4 +1,4 @@
--- HLS Generated Design (Controller + Datapath)
+-- HLS Generated Design
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -188,16 +188,16 @@ architecture Behavioral of Design is
     signal Mux_Mul_0_left_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');
     signal Mux_Mul_0_right_sel : STD_LOGIC_VECTOR(3 downto 0);
     signal Mux_Mul_0_right_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');
-    signal Mux_Add_0_left_sel : STD_LOGIC_VECTOR(3 downto 0);
+    signal Mux_Add_0_left_sel : STD_LOGIC_VECTOR(2 downto 0);
     signal Mux_Add_0_left_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');
-    signal Mux_Add_0_right_sel : STD_LOGIC_VECTOR(3 downto 0);
+    signal Mux_Add_0_right_sel : STD_LOGIC_VECTOR(2 downto 0);
     signal Mux_Add_0_right_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');
-    signal Mux_C_addr_sel : STD_LOGIC_VECTOR(3 downto 0);
+    signal Mux_C_addr_sel : STD_LOGIC_VECTOR(1 downto 0);
     signal Mux_C_addr_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');
-    signal Mux_C_data_sel : STD_LOGIC_VECTOR(3 downto 0);
+    signal Mux_C_data_sel : STD_LOGIC_VECTOR(1 downto 0);
     signal Mux_C_data_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');
 
-    -- Arithmetic unit signals
+    -- Operators resources signals
     signal Add_0_a, Add_0_b : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
     signal Add_0_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
     signal Mul_0_a, Mul_0_b : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
@@ -421,8 +421,8 @@ begin
                 R15_en <= '1';
                 R20_en <= '1';
                 R21_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(0, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(0, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(0, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(0, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(2, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(2, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(3, 4));
@@ -432,8 +432,8 @@ begin
                 R26_en <= '1';
                 R24_en <= '1';
                 R25_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(1, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(1, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(1, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(1, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(3, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(3, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(4, 4));
@@ -443,8 +443,8 @@ begin
                 R30_en <= '1';
                 R31_en <= '1';
                 C_we <= '1';
-                Mux_C_addr_sel <= std_logic_vector(to_unsigned(0, 4));
-                Mux_C_data_sel <= std_logic_vector(to_unsigned(0, 4));
+                Mux_C_addr_sel <= std_logic_vector(to_unsigned(0, 2));
+                Mux_C_data_sel <= std_logic_vector(to_unsigned(0, 2));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(4, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(4, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(5, 4));
@@ -454,8 +454,8 @@ begin
                 R33_en <= '1';
                 R38_en <= '1';
                 R39_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(2, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(2, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(2, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(2, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(5, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(5, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(6, 4));
@@ -465,8 +465,8 @@ begin
                 R44_en <= '1';
                 R42_en <= '1';
                 R43_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(3, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(3, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(3, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(3, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(6, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(6, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(7, 4));
@@ -476,8 +476,8 @@ begin
                 R48_en <= '1';
                 R49_en <= '1';
                 C_we <= '1';
-                Mux_C_addr_sel <= std_logic_vector(to_unsigned(1, 4));
-                Mux_C_data_sel <= std_logic_vector(to_unsigned(1, 4));
+                Mux_C_addr_sel <= std_logic_vector(to_unsigned(1, 2));
+                Mux_C_data_sel <= std_logic_vector(to_unsigned(1, 2));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(7, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(7, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(8, 4));
@@ -487,8 +487,8 @@ begin
                 R51_en <= '1';
                 R56_en <= '1';
                 R57_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(4, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(4, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(4, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(4, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(8, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(8, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(9, 4));
@@ -498,8 +498,8 @@ begin
                 R62_en <= '1';
                 R60_en <= '1';
                 R61_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(5, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(5, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(5, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(5, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(9, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(9, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(10, 4));
@@ -509,8 +509,8 @@ begin
                 R66_en <= '1';
                 R67_en <= '1';
                 C_we <= '1';
-                Mux_C_addr_sel <= std_logic_vector(to_unsigned(2, 4));
-                Mux_C_data_sel <= std_logic_vector(to_unsigned(2, 4));
+                Mux_C_addr_sel <= std_logic_vector(to_unsigned(2, 2));
+                Mux_C_data_sel <= std_logic_vector(to_unsigned(2, 2));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(10, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(10, 4));
                 Mux_A_addr_sel <= std_logic_vector(to_unsigned(11, 4));
@@ -518,18 +518,18 @@ begin
             when S13 =>
                 R68_en <= '1';
                 R69_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(6, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(6, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(6, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(6, 3));
                 Mux_Mul_0_left_sel <= std_logic_vector(to_unsigned(11, 4));
                 Mux_Mul_0_right_sel <= std_logic_vector(to_unsigned(11, 4));
             when S14 =>
                 R71_en <= '1';
-                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(7, 4));
-                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(7, 4));
+                Mux_Add_0_left_sel <= std_logic_vector(to_unsigned(7, 3));
+                Mux_Add_0_right_sel <= std_logic_vector(to_unsigned(7, 3));
             when S15 =>
                 C_we <= '1';
-                Mux_C_addr_sel <= std_logic_vector(to_unsigned(3, 4));
-                Mux_C_data_sel <= std_logic_vector(to_unsigned(3, 4));
+                Mux_C_addr_sel <= std_logic_vector(to_unsigned(3, 2));
+                Mux_C_data_sel <= std_logic_vector(to_unsigned(3, 2));
             when others => null;
         end case;
     end process;
@@ -677,41 +677,40 @@ begin
             (others => '0') when others;
     with Mux_Add_0_left_sel select
         Mux_Add_0_left_out <=
-            R8_out when "0000",
-            R14_out when "0001",
-            R26_out when "0010",
-            R32_out when "0011",
-            R44_out when "0100",
-            R50_out when "0101",
-            R62_out when "0110",
-            R68_out when "0111",
+            R8_out when "000",
+            R14_out when "001",
+            R26_out when "010",
+            R32_out when "011",
+            R44_out when "100",
+            R50_out when "101",
+            R62_out when "110",
+            R68_out when "111",
             (others => '0') when others;
     with Mux_Add_0_right_sel select
         Mux_Add_0_right_out <=
-            R9_out when "0000",
-            R15_out when "0001",
-            R27_out when "0010",
-            R33_out when "0011",
-            R45_out when "0100",
-            R51_out when "0101",
-            R63_out when "0110",
-            R69_out when "0111",
+            R9_out when "000",
+            R15_out when "001",
+            R27_out when "010",
+            R33_out when "011",
+            R45_out when "100",
+            R51_out when "101",
+            R63_out when "110",
+            R69_out when "111",
             (others => '0') when others;
     with Mux_C_addr_sel select
         Mux_C_addr_out <=
-            R16_out when "0000",
-            R34_out when "0001",
-            R52_out when "0010",
-            R70_out when "0011",
+            R16_out when "00",
+            R34_out when "01",
+            R52_out when "10",
+            R70_out when "11",
             (others => '0') when others;
     with Mux_C_data_sel select
         Mux_C_data_out <=
-            R17_out when "0000",
-            R35_out when "0001",
-            R53_out when "0010",
-            R71_out when "0011",
+            R17_out when "00",
+            R35_out when "01",
+            R53_out when "10",
+            R71_out when "11",
             (others => '0') when others;
-
     -- Memory connections
     A_addr_rd <= Mux_A_addr_out(2 downto 0);
     A_addr_wr <= Mux_A_addr_out(2 downto 0);

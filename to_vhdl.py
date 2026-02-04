@@ -3,6 +3,7 @@ VHDL Code Generator for HLS Pipeline
 Generates: Design (Controller + Datapath with component instantiation), Testbench
 Uses external components: dual_port_RAM.vhdl, adder.vhdl, multiplier.vhdl
 """
+from cdfg import *
 
 class VHDLGenerator:
     def __init__(self, fsm_generator, datapath, resource_allocator, register_allocator):
@@ -12,9 +13,10 @@ class VHDLGenerator:
         self.register_allocator = register_allocator
         self.control = fsm_generator.control_by_state
         self.max_time = fsm_generator.max_time
-        self._collect_signals()
+        self.collect_signals()
+        self.DATA_WIDTH = 32
 
-    def _collect_signals(self):
+    def collect_signals(self):
         """Collect all control signal names and memory sizes from FSM and CDFG."""
         self.all_reg_enables = set()
         self.all_mems = set()
@@ -35,25 +37,24 @@ class VHDLGenerator:
         self.mux_widths = {}
         for mux in self.datapath.muxes:
             # Need a minus one since bit_length doesnt account for 0 index.
-            width = self._bits_needed(len(mux.inputs)) if mux.inputs else 1
+            width = self.bits_needed(len(mux.inputs))
             self.mux_widths[mux.name] = width
             
         # from 0 to max_time (that needs a +1) + end state
         self.state_bits = (self.max_time + 2).bit_length()
         
-    def _bits_needed(self, count):
+    def bits_needed(self, count):
         """Calculate bits needed to represent 'count' items (0 to count-1)."""
         return max(1, (count - 1).bit_length())
 
-    def _vhdl_header(self):
-        lines = ["library IEEE;", "use IEEE.STD_LOGIC_1164.ALL;", "use IEEE.NUMERIC_STD.ALL;"]
-        return lines
 
     def generate_design(self) -> str:
         """Generate combined Controller + Datapath with component instantiation."""
         L = []
-        L.append("-- HLS Generated Design (Controller + Datapath)")
-        L.extend(self._vhdl_header())
+        L.append("-- HLS Generated Design")
+        L.append("library IEEE;")
+        L.append("use IEEE.STD_LOGIC_1164.ALL;")
+        L.append("use IEEE.NUMERIC_STD.ALL;")
         L.append("")
         L.append("entity Design is")
         L.append("    Port ( clk, rst : in STD_LOGIC;")
@@ -65,10 +66,10 @@ class VHDLGenerator:
         L.append("")
         
         # Constants
-        L.append("    constant DATA_WIDTH : integer := 32;")
+        L.append(f"    constant DATA_WIDTH : integer := {self.DATA_WIDTH};")
         L.append("")
         
-        # Sort helper for register names
+        # Sort helper for register names so R6 is before R10
         def reg_sort_key(r):
             name = r.name if hasattr(r, 'name') else r
             return int(name[1:]) if name[1:].isdigit() else 0
@@ -79,7 +80,7 @@ class VHDLGenerator:
         L.append("    signal state : state_type := S0;")
         L.append("")
         
-        # Registers
+        # Registers - Need to initialize to 0 
         all_regs = sorted(set(self.register_allocator.register_allocation.values()), key=reg_sort_key)
         L.append("    -- Registers")
         for reg in all_regs:
@@ -88,10 +89,11 @@ class VHDLGenerator:
         L.append("")
         
         # Memory signals (using std_logic_vector for dual_port_RAM)
+        # Dont need to initialize to 0
         L.append("    -- Memory signals")
         for mem in sorted(self.all_mems):
-            size = self.mem_sizes.get(mem, 16)
-            addr_bits = self._bits_needed(size)
+            size = self.mem_sizes[mem]
+            addr_bits = self.bits_needed(size)
             L.append(f"    signal {mem}_we : STD_LOGIC;")
             L.append(f"    signal {mem}_addr_wr : STD_LOGIC_VECTOR({addr_bits-1} downto 0);")
             L.append(f"    signal {mem}_addr_rd : STD_LOGIC_VECTOR({addr_bits-1} downto 0);")
@@ -99,7 +101,7 @@ class VHDLGenerator:
             L.append(f"    signal {mem}_dout : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);")
         L.append("")
         
-        # Mux signals
+        # Mux signals - Need to initialize to 0
         L.append("    -- Multiplexer signals")
         for mux in self.datapath.muxes:
             width = self.mux_widths[mux.name]
@@ -107,12 +109,12 @@ class VHDLGenerator:
             L.append(f"    signal {mux.name}_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');")
         L.append("")
         
-        # Arithmetic unit signals
+        # Arithmetic resources signals
         resources = set(self.resource_allocator.resource_allocation.values())
         adders = sorted([r for r in resources if 'Add' in r.name], key=lambda r: r.name)
         multipliers = sorted([r for r in resources if 'Mul' in r.name], key=lambda r: r.name)
         
-        L.append("    -- Arithmetic unit signals")
+        L.append("    -- Operators resources signals")
         for res in adders + multipliers:
             L.append(f"    signal {res.name}_a, {res.name}_b : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);")
             L.append(f"    signal {res.name}_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);")
@@ -137,8 +139,8 @@ class VHDLGenerator:
         # RAM instances using dual_port_RAM
         L.append("    -- Memory instances (dual_port_RAM)")
         for mem in sorted(self.all_mems):
-            size = self.mem_sizes.get(mem, 16)
-            addr_bits = self._bits_needed(size)
+            size = self.mem_sizes[mem]
+            addr_bits = self.bits_needed(size)
             L.append(f"    {mem}_RAM: entity work.dual_port_RAM")
             L.append(f"        generic map (addr_width => {addr_bits}, data_width => DATA_WIDTH, INIT_FILE => \"{mem}_content.txt\")")
             L.append(f"        port map (clk => clk, we => {mem}_we, addr_wr => {mem}_addr_wr, addr_rd => {mem}_addr_rd, din => {mem}_din, dout => {mem}_dout);")
@@ -199,7 +201,7 @@ class VHDLGenerator:
             for mux, sel in sig['mux_selects'].items():
                 width = self.mux_widths[mux]
                 L.append(f"                {mux}_sel <= std_logic_vector(to_unsigned({sel}, {width}));")
-            if not sig['reg_enables'] and not sig['mem_ops'] and not sig['mux_selects']:
+            if all(not v for v in sig.values()):
                 L.append("                null;")
         L.append("            when others => null;")
         L.append("        end case;")
@@ -216,17 +218,16 @@ class VHDLGenerator:
         L.append("        if rising_edge(clk) then")
         for edge, reg in sorted(self.register_allocator.register_allocation.items(), key=lambda x: reg_sort_key(x[1])):
             src, _, _ = edge
-            t = type(src).__name__
-            if t == 'CstNode':
+            if isinstance(src, CstNode):
                 val = f"std_logic_vector(to_signed({src.value}, DATA_WIDTH))"
-            elif t == 'LoadNode':
+            elif isinstance(src, LoadNode):
                 val = f"{src.mem.name}_dout"
-            elif t == 'MulNode':
-                val = "Mul_0_out"
-            elif t == 'AddNode':
-                val = "Add_0_out"
-            else:
-                val = "(others => '0')"
+            elif isinstance(src, MulNode):
+                res = self.resource_allocator.resource_allocation.get(src)
+                val = f"{res.name}_out"
+            elif isinstance(src, AddNode):
+                res = self.resource_allocator.resource_allocation.get(src)
+                val = f"{res.name}_out"
             L.append(f"            if {reg.name}_en = '1' then {reg.name}_out <= {val}; end if;")
         L.append("        end if;")
         L.append("    end process;")
@@ -247,8 +248,8 @@ class VHDLGenerator:
         # Memory connections (both read and write address from same mux)
         L.append("    -- Memory connections")
         for mem in sorted(self.all_mems):
-            size = self.mem_sizes.get(mem, 16)
-            addr_bits = self._bits_needed(size)
+            size = self.mem_sizes[mem]
+            addr_bits = self.bits_needed(size)
             addr_mux = f"Mux_{mem}_addr"
             data_mux = f"Mux_{mem}_data"
             if addr_mux in self.all_mux_selects:
@@ -275,7 +276,9 @@ class VHDLGenerator:
         """Generate VHDL testbench."""
         L = []
         L.append("-- Testbench")
-        L.extend(self._vhdl_header())
+        L.append("library IEEE;")
+        L.append("use IEEE.STD_LOGIC_1164.ALL;")
+        L.append("use IEEE.NUMERIC_STD.ALL;")
         L.append("")
         L.append("entity testbench is end testbench;")
         L.append("")

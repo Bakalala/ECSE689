@@ -1,5 +1,5 @@
 $date
-  Tue Feb  3 23:17:48 2026
+  Wed Feb  4 12:32:52 2026
 $end
 $version
   GHDL v0
@@ -49,24 +49,24 @@ $var reg 2 < ram_addr_wr[1:0] $end
 $var reg 2 = ram_addr_rd[1:0] $end
 $var reg 32 > ram_din[31:0] $end
 $var reg 32 ? ram_dout[31:0] $end
-$var reg 4 @ mux_ram_addr_sel[3:0] $end
+$var reg 2 @ mux_ram_addr_sel[1:0] $end
 $var reg 32 A mux_ram_addr_out[31:0] $end
-$var reg 4 B mux_mul_0_left_sel[3:0] $end
+$var reg 1 B mux_mul_0_left_sel[0:0] $end
 $var reg 32 C mux_mul_0_left_out[31:0] $end
-$var reg 4 D mux_mul_0_right_sel[3:0] $end
+$var reg 1 D mux_mul_0_right_sel[0:0] $end
 $var reg 32 E mux_mul_0_right_out[31:0] $end
-$var reg 4 F mux_add_0_left_sel[3:0] $end
+$var reg 1 F mux_add_0_left_sel[0:0] $end
 $var reg 32 G mux_add_0_left_out[31:0] $end
-$var reg 4 H mux_add_0_right_sel[3:0] $end
+$var reg 1 H mux_add_0_right_sel[0:0] $end
 $var reg 32 I mux_add_0_right_out[31:0] $end
-$var reg 4 J mux_ram_data_sel[3:0] $end
+$var reg 1 J mux_ram_data_sel[0:0] $end
 $var reg 32 K mux_ram_data_out[31:0] $end
-$var integer 32 L add_0_a $end
-$var integer 32 M add_0_b $end
-$var integer 32 N add_0_out $end
-$var integer 32 O mul_0_a $end
-$var integer 32 P mul_0_b $end
-$var integer 32 Q mul_0_out $end
+$var reg 32 L add_0_a[31:0] $end
+$var reg 32 M add_0_b[31:0] $end
+$var reg 32 N add_0_out[31:0] $end
+$var reg 32 O mul_0_a[31:0] $end
+$var reg 32 P mul_0_b[31:0] $end
+$var reg 32 Q mul_0_out[31:0] $end
 $scope module ram_ram $end
 $var reg 1 R clk $end
 $var reg 1 S we $end
@@ -77,14 +77,15 @@ $var reg 32 W dout[31:0] $end
 $comment ram_dual_port is not handled $end
 $upscope $end
 $scope module add_0_adder $end
-$var integer 32 X a $end
-$var integer 32 Y b $end
-$var integer 32 Z y $end
+$var reg 32 X a[31:0] $end
+$var reg 32 Y b[31:0] $end
+$var reg 32 Z y[31:0] $end
 $upscope $end
 $scope module mul_0_mul $end
-$var integer 32 [ a $end
-$var integer 32 \ b $end
-$var integer 32 ] y $end
+$var reg 32 [ a[31:0] $end
+$var reg 32 \ b[31:0] $end
+$var reg 32 ] y[31:0] $end
+$var reg 64 ^ product[63:0] $end
 $upscope $end
 $upscope $end
 $upscope $end
@@ -121,36 +122,37 @@ b00 <
 b00 =
 b00000000000000000000000000000000 >
 b00000000000000000000000000000000 ?
-b0000 @
+b00 @
 b00000000000000000000000000000000 A
-b0000 B
+b0 B
 b00000000000000000000000000000000 C
-b0000 D
+b0 D
 b00000000000000000000000000000000 E
-b0000 F
+b0 F
 b00000000000000000000000000000000 G
-b0000 H
+b0 H
 b00000000000000000000000000000000 I
-b0000 J
+b0 J
 b00000000000000000000000000000000 K
-b0 L
-b0 M
-b0 N
-b0 O
-b0 P
-b0 Q
+b00000000000000000000000000000000 L
+b00000000000000000000000000000000 M
+b00000000000000000000000000000000 N
+b00000000000000000000000000000000 O
+b00000000000000000000000000000000 P
+b00000000000000000000000000000000 Q
 0R
 0S
 b00 T
 b00 U
 b00000000000000000000000000000000 V
 b00000000000000000000000000000000 W
-b0 X
-b0 Y
-b0 Z
-b0 [
-b0 \
-b0 ]
+b00000000000000000000000000000000 X
+b00000000000000000000000000000000 Y
+b00000000000000000000000000000000 Z
+b00000000000000000000000000000000 [
+b00000000000000000000000000000000 \
+b00000000000000000000000000000000 ]
+b0000000000000000000000000000000000000000000000000000000000000000 ^
 #5000000
 1!
 1%
@@ -196,7 +198,7 @@ b010 '
 1/
 b01 <
 b01 =
-b0001 @
+b01 @
 b00000000000000000000000000000001 A
 1R
 b01 T
@@ -215,7 +217,7 @@ b011 '
 15
 b10 <
 b10 =
-b0010 @
+b10 @
 b00000000000000000000000000000010 A
 1R
 b10 T
@@ -234,7 +236,7 @@ b100 '
 19
 b00 <
 b00 =
-b0000 @
+b00 @
 b00000000000000000000000000000000 A
 1R
 b00 T
@@ -252,7 +254,7 @@ b101 '
 1;
 b11 <
 b11 =
-b0011 @
+b11 @
 b00000000000000000000000000000011 A
 1R
 1S
@@ -272,7 +274,7 @@ b110 '
 0;
 b00 <
 b00 =
-b0000 @
+b00 @
 b00000000000000000000000000000000 A
 1R
 0S

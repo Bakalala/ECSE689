@@ -1,0 +1,44 @@
+digraph Datapath {
+    rankdir=LR;
+    node [fontname="Arial"];
+
+    reg0 [label="R3", shape=box, style=filled, fillcolor=lightblue];
+    reg1 [label="R6", shape=box, style=filled, fillcolor=lightblue];
+    mux2 [label="Mux_Mul_0_right", shape=invtrapezium, style=filled, fillcolor=lightyellow];
+    reg3 [label="R0", shape=box, style=filled, fillcolor=lightblue];
+    res4 [label="RAM\n(Mem)", shape=ellipse, style=filled, fillcolor=lightgreen];
+    reg5 [label="R4", shape=box, style=filled, fillcolor=lightblue];
+    mux6 [label="Mux_Add_0_left", shape=invtrapezium, style=filled, fillcolor=lightyellow];
+    res7 [label="Add_0\n(AddNode)", shape=ellipse, style=filled, fillcolor=lightgreen];
+    reg8 [label="R8", shape=box, style=filled, fillcolor=lightblue];
+    mux9 [label="Mux_RAM_addr", shape=invtrapezium, style=filled, fillcolor=lightyellow];
+    reg10 [label="R1", shape=box, style=filled, fillcolor=lightblue];
+    reg11 [label="R7", shape=box, style=filled, fillcolor=lightblue];
+    mux12 [label="Mux_Mul_0_left", shape=invtrapezium, style=filled, fillcolor=lightyellow];
+    mux13 [label="Mux_Add_0_right", shape=invtrapezium, style=filled, fillcolor=lightyellow];
+    mux14 [label="Mux_RAM_data", shape=invtrapezium, style=filled, fillcolor=lightyellow];
+    reg15 [label="R5", shape=box, style=filled, fillcolor=lightblue];
+    res16 [label="Mul_0\n(MulNode)", shape=ellipse, style=filled, fillcolor=lightgreen];
+    reg17 [label="R2", shape=box, style=filled, fillcolor=lightblue];
+
+    res4 -> reg17 [label="out", fontsize=10];
+    res4 -> reg0 [label="out", fontsize=10];
+    res16 -> reg15 [label="out", fontsize=10];
+    res4 -> reg1 [label="out", fontsize=10];
+    res7 -> reg8 [label="out", fontsize=10];
+    mux9 -> res4 [label="addr", fontsize=10];
+    reg3 -> mux9 [label="in", fontsize=10];
+    reg10 -> mux9 [label="in", fontsize=10];
+    reg5 -> mux9 [label="in", fontsize=10];
+    reg11 -> mux9 [label="in", fontsize=10];
+    mux12 -> res16 [label="left", fontsize=10];
+    reg17 -> mux12 [label="in", fontsize=10];
+    mux2 -> res16 [label="right", fontsize=10];
+    reg0 -> mux2 [label="in", fontsize=10];
+    mux6 -> res7 [label="left", fontsize=10];
+    reg15 -> mux6 [label="in", fontsize=10];
+    mux13 -> res7 [label="right", fontsize=10];
+    reg1 -> mux13 [label="in", fontsize=10];
+    mux14 -> res4 [label="data", fontsize=10];
+    reg8 -> mux14 [label="in", fontsize=10];
+}

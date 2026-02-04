@@ -1,10 +1,22 @@
 v 4
-file . "testbench.vhdl" "a9d948f4c46b82dddc30243188490d2ca37811bf" "20260204032850.621":
-  entity testbench at 2( 38) + 0 on 51;
-  architecture behavioral of testbench at 9( 144) + 0 on 52;
+file . "design.vhdl" "88d5840141d0c5c8b12fafd8bb6d4eab43e95242" "20260204173253.832":
+  entity design at 2( 24) + 0 on 117;
+  architecture behavioral of design at 12( 251) + 0 on 118;
+file . "../core_vhdl_files/adder.vhdl" "17794d357592c9a9177876d4cfd465d42954e46c" "20260204173253.761":
+  entity adder_32 at 3( 89) + 0 on 113;
+  architecture behavioral of adder_32 at 16( 421) + 0 on 114;
+file . "testbench.vhdl" "955815cd2a86d7d1e743d9dd32771b32b6494d6e" "20260204173254.087":
+  entity testbench at 2( 13) + 0 on 119;
+  architecture behavioral of testbench at 8( 119) + 0 on 120;
 file . "controller.vhdl" "8983d1875c697cb35a3b30e0adfd854fddf65cdf" "20260204032850.362":
   entity controller at 2( 18) + 0 on 47;
   architecture behavioral of controller at 49( 1762) + 0 on 48;
 file . "datapath_gen.vhdl" "33fd9997f94c6b6285edebd724846b108ba6719d" "20260204032850.543":
   entity datapath at 2( 38) + 0 on 49;
   architecture behavioral of datapath at 54( 1828) + 0 on 50;
+file . "../core_vhdl_files/dual_port_ram.vhdl" "36655bd31250679311fb52a799d012e7bb69cb66" "20260204173253.717":
+  entity dual_port_ram at 21( 678) + 0 on 111;
+  architecture arch of dual_port_ram at 42( 1220) + 0 on 112;
+file . "../core_vhdl_files/multiplier.vhdl" "c84278452c4dd17b6a3caa5f4aa0c8763c698973" "20260204173253.792":
+  entity multiplier_32 at 3( 90) + 0 on 115;
+  architecture behavioral of multiplier_32 at 16( 432) + 0 on 116;
