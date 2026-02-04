@@ -1,0 +1,10 @@
+v 4
+file . "testbench.vhdl" "a9d948f4c46b82dddc30243188490d2ca37811bf" "20260204032850.621":
+  entity testbench at 2( 38) + 0 on 51;
+  architecture behavioral of testbench at 9( 144) + 0 on 52;
+file . "controller.vhdl" "8983d1875c697cb35a3b30e0adfd854fddf65cdf" "20260204032850.362":
+  entity controller at 2( 18) + 0 on 47;
+  architecture behavioral of controller at 49( 1762) + 0 on 48;
+file . "datapath_gen.vhdl" "33fd9997f94c6b6285edebd724846b108ba6719d" "20260204032850.543":
+  entity datapath at 2( 38) + 0 on 49;
+  architecture behavioral of datapath at 54( 1828) + 0 on 50;

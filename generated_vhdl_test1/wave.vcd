@@ -1,0 +1,380 @@
+$date
+  Tue Feb  3 23:17:48 2026
+$end
+$version
+  GHDL v0
+$end
+$timescale
+  1 fs
+$end
+$scope module standard $end
+$upscope $end
+$scope module textio $end
+$upscope $end
+$scope module std_logic_1164 $end
+$upscope $end
+$scope module numeric_std $end
+$upscope $end
+$scope module testbench $end
+$var reg 1 ! clk $end
+$var reg 1 " rst $end
+$var reg 3 # state_out[2:0] $end
+$var reg 1 $ done $end
+$scope module design_inst $end
+$var reg 1 % clk $end
+$var reg 1 & rst $end
+$var reg 3 ' state_out[2:0] $end
+$var reg 1 ( done $end
+$comment state is not handled $end
+$var reg 1 ) r0_en $end
+$var reg 32 * r0_out[31:0] $end
+$var reg 1 + r1_en $end
+$var reg 32 , r1_out[31:0] $end
+$var reg 1 - r2_en $end
+$var reg 32 . r2_out[31:0] $end
+$var reg 1 / r3_en $end
+$var reg 32 0 r3_out[31:0] $end
+$var reg 1 1 r4_en $end
+$var reg 32 2 r4_out[31:0] $end
+$var reg 1 3 r5_en $end
+$var reg 32 4 r5_out[31:0] $end
+$var reg 1 5 r6_en $end
+$var reg 32 6 r6_out[31:0] $end
+$var reg 1 7 r7_en $end
+$var reg 32 8 r7_out[31:0] $end
+$var reg 1 9 r8_en $end
+$var reg 32 : r8_out[31:0] $end
+$var reg 1 ; ram_we $end
+$var reg 2 < ram_addr_wr[1:0] $end
+$var reg 2 = ram_addr_rd[1:0] $end
+$var reg 32 > ram_din[31:0] $end
+$var reg 32 ? ram_dout[31:0] $end
+$var reg 4 @ mux_ram_addr_sel[3:0] $end
+$var reg 32 A mux_ram_addr_out[31:0] $end
+$var reg 4 B mux_mul_0_left_sel[3:0] $end
+$var reg 32 C mux_mul_0_left_out[31:0] $end
+$var reg 4 D mux_mul_0_right_sel[3:0] $end
+$var reg 32 E mux_mul_0_right_out[31:0] $end
+$var reg 4 F mux_add_0_left_sel[3:0] $end
+$var reg 32 G mux_add_0_left_out[31:0] $end
+$var reg 4 H mux_add_0_right_sel[3:0] $end
+$var reg 32 I mux_add_0_right_out[31:0] $end
+$var reg 4 J mux_ram_data_sel[3:0] $end
+$var reg 32 K mux_ram_data_out[31:0] $end
+$var integer 32 L add_0_a $end
+$var integer 32 M add_0_b $end
+$var integer 32 N add_0_out $end
+$var integer 32 O mul_0_a $end
+$var integer 32 P mul_0_b $end
+$var integer 32 Q mul_0_out $end
+$scope module ram_ram $end
+$var reg 1 R clk $end
+$var reg 1 S we $end
+$var reg 2 T addr_wr[1:0] $end
+$var reg 2 U addr_rd[1:0] $end
+$var reg 32 V din[31:0] $end
+$var reg 32 W dout[31:0] $end
+$comment ram_dual_port is not handled $end
+$upscope $end
+$scope module add_0_adder $end
+$var integer 32 X a $end
+$var integer 32 Y b $end
+$var integer 32 Z y $end
+$upscope $end
+$scope module mul_0_mul $end
+$var integer 32 [ a $end
+$var integer 32 \ b $end
+$var integer 32 ] y $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+0!
+1"
+b000 #
+0$
+0%
+1&
+b000 '
+0(
+1)
+b00000000000000000000000000000000 *
+1+
+b00000000000000000000000000000000 ,
+0-
+b00000000000000000000000000000000 .
+0/
+b00000000000000000000000000000000 0
+11
+b00000000000000000000000000000000 2
+03
+b00000000000000000000000000000000 4
+05
+b00000000000000000000000000000000 6
+17
+b00000000000000000000000000000000 8
+09
+b00000000000000000000000000000000 :
+0;
+b00 <
+b00 =
+b00000000000000000000000000000000 >
+b00000000000000000000000000000000 ?
+b0000 @
+b00000000000000000000000000000000 A
+b0000 B
+b00000000000000000000000000000000 C
+b0000 D
+b00000000000000000000000000000000 E
+b0000 F
+b00000000000000000000000000000000 G
+b0000 H
+b00000000000000000000000000000000 I
+b0000 J
+b00000000000000000000000000000000 K
+b0 L
+b0 M
+b0 N
+b0 O
+b0 P
+b0 Q
+0R
+0S
+b00 T
+b00 U
+b00000000000000000000000000000000 V
+b00000000000000000000000000000000 W
+b0 X
+b0 Y
+b0 Z
+b0 [
+b0 \
+b0 ]
+#5000000
+1!
+1%
+b00000000000000000000000000000001 ,
+b00000000000000000000000000000010 2
+b00000000000000000000000000000011 8
+1R
+#10000000
+0!
+0%
+0R
+#15000000
+1!
+1%
+1R
+#20000000
+0!
+0"
+0%
+0&
+0R
+#25000000
+1!
+b001 #
+1%
+b001 '
+0)
+0+
+1-
+01
+07
+1R
+#30000000
+0!
+0%
+0R
+#35000000
+1!
+b010 #
+1%
+b010 '
+0-
+1/
+b01 <
+b01 =
+b0001 @
+b00000000000000000000000000000001 A
+1R
+b01 T
+b01 U
+#40000000
+0!
+0%
+0R
+#45000000
+1!
+b011 #
+1%
+b011 '
+0/
+13
+15
+b10 <
+b10 =
+b0010 @
+b00000000000000000000000000000010 A
+1R
+b10 T
+b10 U
+#50000000
+0!
+0%
+0R
+#55000000
+1!
+b100 #
+1%
+b100 '
+03
+05
+19
+b00 <
+b00 =
+b0000 @
+b00000000000000000000000000000000 A
+1R
+b00 T
+b00 U
+#60000000
+0!
+0%
+0R
+#65000000
+1!
+b101 #
+1%
+b101 '
+09
+1;
+b11 <
+b11 =
+b0011 @
+b00000000000000000000000000000011 A
+1R
+1S
+b11 T
+b11 U
+#70000000
+0!
+0%
+0R
+#75000000
+1!
+b110 #
+1$
+1%
+b110 '
+1(
+0;
+b00 <
+b00 =
+b0000 @
+b00000000000000000000000000000000 A
+1R
+0S
+b00 T
+b00 U
+#80000000
+0!
+0%
+0R
+#85000000
+1!
+1%
+1R
+#90000000
+0!
+0%
+0R
+#95000000
+1!
+1%
+1R
+#100000000
+0!
+0%
+0R
+#105000000
+1!
+1%
+1R
+#110000000
+0!
+0%
+0R
+#115000000
+1!
+1%
+1R
+#120000000
+0!
+0%
+0R
+#125000000
+1!
+1%
+1R
+#130000000
+0!
+0%
+0R
+#135000000
+1!
+1%
+1R
+#140000000
+0!
+0%
+0R
+#145000000
+1!
+1%
+1R
+#150000000
+0!
+0%
+0R
+#155000000
+1!
+1%
+1R
+#160000000
+0!
+0%
+0R
+#165000000
+1!
+1%
+1R
+#170000000
+0!
+0%
+0R
+#175000000
+1!
+1%
+1R
+#180000000
+0!
+0%
+0R
+#185000000
+1!
+1%
+1R
+#190000000
+0!
+0%
+0R
+#195000000
+1!
+1%
+1R
+#200000000
+0!
+0%
+0R

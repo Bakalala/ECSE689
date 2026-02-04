@@ -1,0 +1,445 @@
+$date
+  Tue Feb  3 19:51:22 2026
+$end
+$version
+  GHDL v0
+$end
+$timescale
+  1 fs
+$end
+$scope module standard $end
+$upscope $end
+$scope module textio $end
+$upscope $end
+$scope module std_logic_1164 $end
+$upscope $end
+$scope module numeric_std $end
+$upscope $end
+$scope module testbench $end
+$var reg 1 ! clk $end
+$var reg 1 " rst $end
+$var reg 1 # r0_en $end
+$var reg 1 $ r1_en $end
+$var reg 1 % r2_en $end
+$var reg 1 & r3_en $end
+$var reg 1 ' r4_en $end
+$var reg 1 ( r5_en $end
+$var reg 1 ) r6_en $end
+$var reg 1 * r7_en $end
+$var reg 1 + r8_en $end
+$var reg 1 , ram_en $end
+$var reg 1 - ram_wr $end
+$var reg 4 . mux_add_0_left_sel[3:0] $end
+$var reg 4 / mux_add_0_right_sel[3:0] $end
+$var reg 4 0 mux_mul_0_left_sel[3:0] $end
+$var reg 4 1 mux_mul_0_right_sel[3:0] $end
+$var reg 4 2 mux_ram_addr_sel[3:0] $end
+$var reg 4 3 mux_ram_data_sel[3:0] $end
+$var reg 3 4 state_out[2:0] $end
+$var reg 1 5 done $end
+$scope module ctrl $end
+$var reg 1 6 clk $end
+$var reg 1 7 rst $end
+$var reg 1 8 r0_en $end
+$var reg 1 9 r1_en $end
+$var reg 1 : r2_en $end
+$var reg 1 ; r3_en $end
+$var reg 1 < r4_en $end
+$var reg 1 = r5_en $end
+$var reg 1 > r6_en $end
+$var reg 1 ? r7_en $end
+$var reg 1 @ r8_en $end
+$var reg 1 A ram_en $end
+$var reg 1 B ram_wr $end
+$var reg 4 C mux_add_0_left_sel[3:0] $end
+$var reg 4 D mux_add_0_right_sel[3:0] $end
+$var reg 4 E mux_mul_0_left_sel[3:0] $end
+$var reg 4 F mux_mul_0_right_sel[3:0] $end
+$var reg 4 G mux_ram_addr_sel[3:0] $end
+$var reg 4 H mux_ram_data_sel[3:0] $end
+$var reg 3 I state_out[2:0] $end
+$comment state is not handled $end
+$upscope $end
+$scope module dp $end
+$var reg 1 J clk $end
+$var reg 1 K rst $end
+$var reg 1 L r0_en $end
+$var reg 1 M r1_en $end
+$var reg 1 N r2_en $end
+$var reg 1 O r3_en $end
+$var reg 1 P r4_en $end
+$var reg 1 Q r5_en $end
+$var reg 1 R r6_en $end
+$var reg 1 S r7_en $end
+$var reg 1 T r8_en $end
+$var reg 1 U ram_en $end
+$var reg 1 V ram_wr $end
+$var reg 4 W mux_add_0_left_sel[3:0] $end
+$var reg 4 X mux_add_0_right_sel[3:0] $end
+$var reg 4 Y mux_mul_0_left_sel[3:0] $end
+$var reg 4 Z mux_mul_0_right_sel[3:0] $end
+$var reg 4 [ mux_ram_addr_sel[3:0] $end
+$var reg 4 \ mux_ram_data_sel[3:0] $end
+$var reg 1 ] done $end
+$var integer 32 ^ r0_out $end
+$var integer 32 _ r1_out $end
+$var integer 32 ` r2_out $end
+$var integer 32 a r3_out $end
+$var integer 32 b r4_out $end
+$var integer 32 c r5_out $end
+$var integer 32 d r6_out $end
+$var integer 32 e r7_out $end
+$var integer 32 f r8_out $end
+$var integer 32 g mux_ram_addr_out $end
+$var integer 32 h mux_mul_0_left_out $end
+$var integer 32 i mux_mul_0_right_out $end
+$var integer 32 j mux_add_0_left_out $end
+$var integer 32 k mux_add_0_right_out $end
+$var integer 32 l mux_ram_data_out $end
+$var integer 32 m ram_dout $end
+$var integer 32 n add_0_out $end
+$var integer 32 o mul_0_out $end
+$comment ram_mem is not handled $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+0!
+1"
+1#
+1$
+0%
+0&
+1'
+0(
+0)
+1*
+0+
+0,
+0-
+b0000 .
+b0000 /
+b0000 0
+b0000 1
+b0000 2
+b0000 3
+b000 4
+15
+06
+17
+18
+19
+0:
+0;
+1<
+0=
+0>
+1?
+0@
+0A
+0B
+b0000 C
+b0000 D
+b0000 E
+b0000 F
+b0000 G
+b0000 H
+b000 I
+0J
+1K
+1L
+1M
+0N
+0O
+1P
+0Q
+0R
+1S
+0T
+0U
+0V
+b0000 W
+b0000 X
+b0000 Y
+b0000 Z
+b0000 [
+b0000 \
+1]
+b0 ^
+b0 _
+b0 `
+b0 a
+b0 b
+b0 c
+b0 d
+b0 e
+b0 f
+b0 g
+b0 h
+b0 i
+b0 j
+b0 k
+b0 l
+b0 m
+b0 n
+b0 o
+#5000000
+1!
+16
+1J
+b1 _
+b10 b
+b11 e
+#10000000
+0!
+06
+0J
+#15000000
+1!
+16
+1J
+#20000000
+0!
+0"
+06
+07
+0J
+0K
+#25000000
+1!
+0#
+0$
+1%
+0'
+0*
+1,
+b001 4
+16
+08
+09
+1:
+0<
+0?
+1A
+b001 I
+1J
+0L
+0M
+1N
+0P
+0S
+1U
+#30000000
+0!
+06
+0J
+#35000000
+1!
+0%
+1&
+b0001 2
+b010 4
+16
+0:
+1;
+1A
+b0001 G
+b010 I
+1J
+0N
+1O
+b0001 [
+b1 g
+#40000000
+0!
+06
+0J
+#45000000
+1!
+0&
+1(
+1)
+b0010 2
+b011 4
+16
+0;
+1=
+1>
+1A
+b0010 G
+b011 I
+1J
+0O
+1Q
+1R
+b0010 [
+b10 g
+#50000000
+0!
+06
+0J
+#55000000
+1!
+0(
+0)
+1+
+0,
+b0000 2
+b100 4
+16
+0=
+0>
+1@
+0A
+b0000 G
+b100 I
+1J
+0Q
+0R
+1T
+0U
+b0000 [
+b0 g
+#60000000
+0!
+06
+0J
+#65000000
+1!
+0+
+1,
+1-
+b0011 2
+b101 4
+16
+0@
+1A
+1B
+b0011 G
+b101 I
+1J
+0T
+1U
+1V
+b0011 [
+b11 g
+#70000000
+0!
+06
+0J
+#75000000
+1!
+0,
+0-
+b0000 2
+b110 4
+16
+0A
+0B
+b0000 G
+b110 I
+1J
+0U
+0V
+b0000 [
+b0 g
+#80000000
+0!
+06
+0J
+#85000000
+1!
+16
+1J
+#90000000
+0!
+06
+0J
+#95000000
+1!
+16
+1J
+#100000000
+0!
+06
+0J
+#105000000
+1!
+16
+1J
+#110000000
+0!
+06
+0J
+#115000000
+1!
+16
+1J
+#120000000
+0!
+06
+0J
+#125000000
+1!
+16
+1J
+#130000000
+0!
+06
+0J
+#135000000
+1!
+16
+1J
+#140000000
+0!
+06
+0J
+#145000000
+1!
+16
+1J
+#150000000
+0!
+06
+0J
+#155000000
+1!
+16
+1J
+#160000000
+0!
+06
+0J
+#165000000
+1!
+16
+1J
+#170000000
+0!
+06
+0J
+#175000000
+1!
+16
+1J
+#180000000
+0!
+06
+0J
+#185000000
+1!
+16
+1J
+#190000000
+0!
+06
+0J
+#195000000
+1!
+16
+1J
+#200000000
+0!
+06
+0J
