@@ -6,38 +6,40 @@ class Scheduler:
         self.schedule_table = {} # node -> start_time
     
     def schedule(self):
-
         nodes = self.cdfg.nodes.copy()
-        # Keep track of when each RAM is busy
-        ram_busy = {node.mem.name: 0 for node in nodes if isinstance(node, (LoadNode, StoreNode))}
 
         # Get list of predecessors for each node
         predecessors = {n: [] for n in nodes}
         for src, dst, _ in self.cdfg.edges:
             predecessors[dst].append(src)
         
-        for node in nodes[:]:
-            if predecessors[node] == []:
-                self.schedule_table[node] = 0
-                nodes.remove(node)
+        time = 0
 
-        time = 1
-
-        while nodes != []:
-            # Need to make a copy of schedule_table to avoid modifying it while iterating and using the wrong time
-            schedule_table_copy = self.schedule_table.copy()
+        while nodes:
+            ram_busy = set()
+            # Sort to process instant nodes first: allows chaining in a single pass
+            nodes.sort(key=lambda n: not isinstance(n, (CstNode, VarLoadNode)))
+            
             for node in nodes[:]:
-                if any(pred not in schedule_table_copy for pred in predecessors[node]):
+                # 1. Wait for all predecessors to be scheduled
+                if not all(p in self.schedule_table for p in predecessors[node]):
                     continue
-                elif isinstance(node, (LoadNode, StoreNode)) and ram_busy[node.mem.name] == 1:
+                
+                # 2. RAM Port constraint: One op per RAM per cycle
+                if isinstance(node, (LoadNode, StoreNode)) and node.mem.name in ram_busy:
                     continue
-                else:
-                    self.schedule_table[node] = time
-                    if isinstance(node, (LoadNode, StoreNode)):
-                        ram_busy[node.mem.name] = 1
-                    nodes.remove(node)
+                
+                # 3. Timing constraint: 
+                # Ignore node if any of its predecessors are scheduled in this cycle except CstNode and VarLoadNode
+                if any(self.schedule_table[p] == time and not isinstance(p, (CstNode, VarLoadNode)) 
+                       for p in predecessors[node]):
+                    continue
+                
+                self.schedule_table[node] = time
+                if isinstance(node, (LoadNode, StoreNode)):
+                    ram_busy.add(node.mem.name)
+                nodes.remove(node)
+                
             time += 1
-            ram_busy.update({k: 0 for k in ram_busy})
-       
             
         return self.schedule_table

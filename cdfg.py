@@ -28,6 +28,14 @@ class LoadNode(DFGNode):
 class StoreNode(DFGNode):
     mem: Mem
 
+@dataclass(eq=False)
+class VarLoadNode(DFGNode):
+    var: Var
+
+@dataclass(eq=False)
+class VarStoreNode(DFGNode):
+    var: Var
+
 
 # --- Graph Structure ---
 
@@ -47,6 +55,7 @@ class CDFG:
 class ASTToCDFG:
     def __init__(self):
         self.cdfg = CDFG()
+        self.var_dependency = {} # track if Var has dependency on other node
         
     def convert(self, node: ASTNode) -> DFGNode:
         if isinstance(node, Cst):
@@ -94,5 +103,29 @@ class ASTToCDFG:
             for stmt in node.stmts:
                 self.convert(stmt)
             return None
+            
+        elif isinstance(node, VarLoad):
+            dfg_node = VarLoadNode(node.var)
+            self.cdfg.add_node(dfg_node)
+            # Dependency on previous store/load to same variable
+            if node.var in self.var_dependency:
+                self.cdfg.add_edge(self.var_dependency[node.var], dfg_node, "dep")
+            
+            self.var_dependency[node.var] = dfg_node # handles write after read
+            return dfg_node
+            
+        elif isinstance(node, VarStore):
+            val = self.convert(node.val)
+            dfg_node = VarStoreNode(node.var)
+            self.cdfg.add_node(dfg_node)
+            self.cdfg.add_edge(val, dfg_node, "data")
+            
+            # Dependency on previous store/load to same variable
+            if node.var in self.var_dependency:
+                self.cdfg.add_edge(self.var_dependency[node.var], dfg_node, "dep")
+                
+            self.var_dependency[node.var] = dfg_node
+            return dfg_node
+            
         else:
             raise NotImplementedError(f"Conversion not implemented for {type(node)}")

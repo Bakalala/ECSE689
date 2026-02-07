@@ -7,6 +7,8 @@ class Interpreter:
     def __init__(self):
         # Dictionary of RAMS, where the list stores the values of each RAM
         self.memory_store = {}
+        # Variable environment
+        self.env = {}
 
     def allocate(self, mem_node, init_values = None):
         # Initialize the RAM with init_values or 0s
@@ -40,6 +42,11 @@ class Interpreter:
             else:
                 raise IndexError(f"Load address {addr} out of bounds")
         
+        elif isinstance(node, VarLoad):
+            if node.var not in self.env:
+                raise RuntimeError(f"Variable '{node.var.name}' not defined")
+            return self.env[node.var]
+        
         else:
             raise NotImplementedError(f"Unknown expression node: {type(node)}")
 
@@ -59,5 +66,9 @@ class Interpreter:
         elif isinstance(node, Block):
             for stmt in node.stmts:
                 self.exec_stmt(stmt)
+        elif isinstance(node, VarStore):
+            val = self.eval_expr(node.val)
+            self.env[node.var] = val
+            
         else:
             raise NotImplementedError(f"Unknown statement node: {type(node)}")

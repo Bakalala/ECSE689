@@ -48,5 +48,9 @@ class DOTVisualizer:
             return f"Load\\n[{node.mem.name}]"
         elif isinstance(node, StoreNode):
             return f"Store\\n[{node.mem.name}]"
+        elif isinstance(node, VarLoadNode):
+            return f"VarLoad\\n({node.var.name})"
+        elif isinstance(node, VarStoreNode):
+            return f"VarStore\\n({node.var.name})"
         else:
             return str(type(node).__name__)

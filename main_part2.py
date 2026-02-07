@@ -1,5 +1,8 @@
 from ast_nodes import *
 from interpreter import Interpreter
+from cdfg import ASTToCDFG
+from cdfg_visualizer import DOTVisualizer
+
 
 def main():
     print("--- Defining AST ---")
@@ -67,14 +70,12 @@ def main():
 
     # 4. CDFG Generation
     print("\n--- Generating CDFG ---")
-    from cdfg import ASTToCDFG
     converter = ASTToCDFG()
     converter.convert(program)
     print("CDFG generated.")
     
     # 5. DOT Visualization
     print("\n--- Generating DOT ---")
-    from visualizer import DOTVisualizer
     viz = DOTVisualizer(converter.cdfg)
     dot_output = viz.to_dot()
     print("DOT Output:")

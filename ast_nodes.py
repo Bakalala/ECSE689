@@ -45,3 +45,17 @@ class Cst(Expr):
 @dataclass(frozen=True)
 class Block(Stmt):
     stmts: List[Stmt]
+
+@dataclass(frozen=True)
+class Var(Expr):
+    name: str
+
+@dataclass(frozen=True)
+class VarLoad(Expr):
+    var: Var
+
+@dataclass(frozen=True)
+class VarStore(Stmt):
+    var: Var
+    val: Expr
+

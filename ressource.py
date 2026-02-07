@@ -73,6 +73,17 @@ class ResourceAllocator:
                         # Allocate resource to node
                         self.resource_allocation[node] = resource
 
+                elif isinstance(node, (VarLoadNode, VarStoreNode)):
+                    var_key = f"Var_{node.var.name}" 
+                    if var_key in self.available_resources and len(self.available_resources[var_key]) > 0:
+                        resource = self.available_resources[var_key][0]
+                        self.resource_allocation[node] = resource
+                    else:
+                        resource = Resource(var_key, type(node.var))
+                        self.total_resources += 1
+                        self.available_resources[var_key].append(resource)
+                        self.resource_allocation[node] = resource
+
                 # Fill inputs and outputs for the resource based on the current assigned node
                 if node in self.resource_allocation:
                     res = self.resource_allocation[node]
@@ -103,7 +114,7 @@ class RegisterAllocator:
     def allocate(self):
 
         for src, dst, label in self.cdfg.edges:
-            if isinstance(src, (CstNode, AddNode, MulNode, LoadNode)):
+            if isinstance(src, (CstNode, AddNode, MulNode, LoadNode, VarLoadNode)):
                 reg_name = "R{}".format(self.reg_count)
                 param_reg= Register(reg_name)
                 self.reg_count += 1
