@@ -1,9 +1,8 @@
-from ast_nodes import Mem
+from ast_nodes import *
 from dataclasses import dataclass
 from cdfg import *
 from collections import defaultdict
 import copy
-
 
 
 class Resource:
@@ -99,22 +98,35 @@ class ResourceAllocator:
 
 
 class Register:
-    def __init__(self, name: str):
+    def __init__(self, name: str, is_wire: bool = False):
         self.name = name
+        self.is_wire = is_wire
 
     def __repr__(self):
-        return f"{self.name}"
+        return f"{self.name}{'(W)' if self.is_wire else ''}"
 
 class RegisterAllocator:
-    def __init__(self, cdfg: CDFG):
+    def __init__(self, cdfg: CDFG, schedule: dict = None):
         self.cdfg = cdfg
+        self.schedule = schedule
         self.register_allocation = {}
         self.reg_count = 0
         
     def allocate(self):
 
         for src, dst, label in self.cdfg.edges:
-            if isinstance(src, (CstNode, AddNode, MulNode, LoadNode, VarLoadNode)):
+            if label == "dep":
+                continue
+
+            # Determine if this should be a wire (intra-cycle) or register (inter-cycle)
+            is_wire = False
+            if self.schedule is not None:
+                # If both are scheduled in same cycle, use wire
+                if src in self.schedule and dst in self.schedule:
+                    if self.schedule[src] == self.schedule[dst]:
+                        is_wire = True
+
+            if not is_wire and isinstance(src, (CstNode, AddNode, MulNode, LoadNode, VarLoadNode)):
                 reg_name = "R{}".format(self.reg_count)
                 param_reg= Register(reg_name)
                 self.reg_count += 1
@@ -130,4 +142,3 @@ class Multiplexer:
     
     def __repr__(self):
         return f"Mux({self.name}, inputs={len(self.inputs)})"
-

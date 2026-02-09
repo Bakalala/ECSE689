@@ -37,6 +37,7 @@ class VarStoreNode(DFGNode):
     var: Var
 
 
+
 # --- Graph Structure ---
 
 @dataclass
@@ -127,5 +128,26 @@ class ASTToCDFG:
             self.var_dependency[node.var] = dfg_node
             return dfg_node
             
+        elif isinstance(node, For):
+            # Unroll the loop and create new nodes for each iteration
+            for k in range(node.itNum.value):
+                # Next iteration's VarStore(itVar) must run after previous body completes
+                cst_k = CstNode(k)
+                self.cdfg.add_node(cst_k)
+                
+                var_store = VarStoreNode(node.itVar)
+                self.cdfg.add_node(var_store)
+                self.cdfg.add_edge(cst_k, var_store, "data")
+                
+                # Dependencies for the loop variable store (same-var ordering)
+                if node.itVar in self.var_dependency:
+                    self.cdfg.add_edge(self.var_dependency[node.itVar], var_store, "dep")
+                self.var_dependency[node.itVar] = var_store
+                
+                # Convert body; its last node becomes dependency for next iteration's VarStore(itVar)
+                self.convert(node.body)
+            
+            return None
+
         else:
             raise NotImplementedError(f"Conversion not implemented for {type(node)}")

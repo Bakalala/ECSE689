@@ -59,3 +59,9 @@ class VarStore(Stmt):
     var: Var
     val: Expr
 
+@dataclass(frozen=True)
+class For(Stmt):
+    itVar: Var
+    itNum: int
+    body: Stmt
+

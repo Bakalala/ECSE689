@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# System
+.DS_Store
+
+# Generated VHDL directories
+# Ignore all content in generated folders
+generated_vhdl_*/*
+
+# But keep run.sh
+!generated_vhdl_*/run.sh
+
+# And keep content files (e.g., RAM_content.txt)
+!generated_vhdl_*/*_content*

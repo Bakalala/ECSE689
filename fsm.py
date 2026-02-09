@@ -1,5 +1,5 @@
 from collections import defaultdict
-from cdfg import StoreNode, LoadNode
+from cdfg import StoreNode, LoadNode, VarStoreNode, CstNode
 
 
 class FSMGenerator:
@@ -26,11 +26,16 @@ class FSMGenerator:
             
             for node in nodes_by_time[t]:
                 # 1. Register enables
-                if not isinstance(node, StoreNode):
+                if not isinstance(node, (StoreNode, VarStoreNode)):
                     for edge, reg in self.register_allocator.register_allocation.items():
                         src, dst, label = edge
                         if src == node:
                             reg_enables.append(reg)
+                
+                if isinstance(node, VarStoreNode):
+                    res = self.resource_allocator.resource_allocation.get(node)
+                    if res:
+                        reg_enables.append(res)
                 
                 # 2. Memory ops (one per memory per cycle)
                 if isinstance(node, LoadNode):
@@ -44,13 +49,21 @@ class FSMGenerator:
                 
                 # 3. Mux selects
                 res = self.resource_allocator.resource_allocation.get(node)
-                if res: # check not a CST node. 
-                    for (src, dst, label), reg in self.register_allocator.register_allocation.items():
+                if res and hasattr(self.datapath, "cdfg"): # check not a CST node.
+                     for src, dst, label in self.datapath.cdfg.edges:
                         if dst == node:
+                            reg = self.register_allocator.register_allocation.get((src, dst, label))
+                            if reg:
+                                input_obj = reg
+                            elif isinstance(src, CstNode):
+                                input_obj = src
+                            else:
+                                input_obj = self.resource_allocator.resource_allocation.get(src)
+                                
                             for mux in self.datapath.muxes:
                                 if mux.name == "Mux_{}_{}".format(res.name, label):
-                                    if reg in mux.inputs:
-                                        mux_selects[mux.name] = mux.inputs.index(reg)
+                                    if input_obj in mux.inputs:
+                                        mux_selects[mux.name] = mux.inputs.index(input_obj)
             
             self.control_by_state[t] = {
                 'reg_enables': reg_enables,

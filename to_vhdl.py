@@ -25,11 +25,20 @@ class VHDLGenerator:
         
         for signals in self.control.values():
             for reg in signals['reg_enables']:
-                self.all_reg_enables.add(reg.name)
+                # Filter out wires (though they shouldn't exist in register_allocation anymore)
+                if not getattr(reg, 'is_wire', False):
+                    self.all_reg_enables.add(reg.name)
             for mem_name in signals['mem_ops']:
                 self.all_mems.add(mem_name)
             for mux_name in signals['mux_selects']:
                 self.all_mux_selects.add(mux_name)
+        
+        # Identify variable resources
+        self.all_vars = set()
+        resources = set(self.resource_allocator.resource_allocation.values())
+        for res in resources:
+            if res.name.startswith("Var_"):
+                self.all_vars.add(res)
                 
         # Get memory sizes from resource allocator instead of rescanning
         self.mem_sizes = self.resource_allocator.mem_sizes
@@ -46,6 +55,37 @@ class VHDLGenerator:
     def bits_needed(self, count):
         """Calculate bits needed to represent 'count' items (0 to count-1)."""
         return max(1, (count - 1).bit_length())
+
+    def get_signal_name(self, obj) -> str:
+        """Resolve VHDL signal name for a Mux input object (Register, Resource, or CstNode)."""
+        if isinstance(obj, CstNode):
+            return f"std_logic_vector(to_signed({obj.value}, DATA_WIDTH))"
+        
+        # Check if it has a 'name' attribute (Resource or Register)
+        if hasattr(obj, 'name'):
+            name = obj.name
+            
+            # 1. Register
+            if name.startswith("R"):
+                return f"{name}_out"
+            
+            # 2. Variable Resource
+            if name.startswith("Var_"):
+                return f"{name}_reg"
+            
+            # 3. Arithmetic Resource (Add, Mul)
+            if name.startswith("Add_") or name.startswith("Mul_"):
+                return f"{name}_out"
+            
+            # 4. Memory Resource (Load/Store)
+            # Check if name is in known memories
+            if name in self.all_mems:
+                 return f"{name}_dout"
+            
+            # Fallback for unrecognized resources
+            return f"{name}_out"
+            
+        return "UNKNOWN_SIGNAL"
 
 
     def generate_design(self) -> str:
@@ -84,8 +124,17 @@ class VHDLGenerator:
         all_regs = sorted(set(self.register_allocator.register_allocation.values()), key=reg_sort_key)
         L.append("    -- Registers")
         for reg in all_regs:
-            L.append(f"    signal {reg.name}_en : STD_LOGIC;")
-            L.append(f"    signal {reg.name}_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');")
+            # We don't expect any wires here now
+            if not getattr(reg, 'is_wire', False):
+                L.append(f"    signal {reg.name}_en : STD_LOGIC;")
+                L.append(f"    signal {reg.name}_out : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');")
+
+        L.append("")
+
+        L.append("    -- Variable registers")
+        for var_res in sorted(self.all_vars, key=lambda v: v.name):
+            L.append(f"    signal {var_res.name}_reg : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0) := (others => '0');")
+            L.append(f"    signal {var_res.name}_en : STD_LOGIC;")
         L.append("")
         
         # Memory signals (using std_logic_vector for dual_port_RAM)
@@ -184,23 +233,31 @@ class VHDLGenerator:
         L.append("    process(state)")
         L.append("    begin")
         for reg in all_regs:
-            L.append(f"        {reg.name}_en <= '0';")
+            if not getattr(reg, 'is_wire', False):
+                L.append(f"        {reg.name}_en <= '0';")
         for mem in sorted(self.all_mems):
             L.append(f"        {mem}_we <= '0';")
+        for var_res in sorted(self.all_vars, key=lambda v: v.name):
+            L.append(f"        {var_res.name}_en <= '0';")
         for mux in self.datapath.muxes:
             L.append(f"        {mux.name}_sel <= (others => '0');")
         L.append("        case state is")
         for t in range(self.max_time + 1):
             sig = self.control[t]
             L.append(f"            when S{t} =>")
+    
+            # For registers and variable resources
             for reg in sig['reg_enables']:
-                L.append(f"                {reg.name}_en <= '1';")
+                if not getattr(reg, 'is_wire', False):
+                    L.append(f"                {reg.name}_en <= '1';")
+
             for mem, op in sig['mem_ops'].items():
                 if op == 'write':
                     L.append(f"                {mem}_we <= '1';")
             for mux, sel in sig['mux_selects'].items():
                 width = self.mux_widths[mux]
                 L.append(f"                {mux}_sel <= std_logic_vector(to_unsigned({sel}, {width}));")
+            
             if all(not v for v in sig.values()):
                 L.append("                null;")
         L.append("            when others => null;")
@@ -212,23 +269,35 @@ class VHDLGenerator:
         L.append("    -- ========== Datapath ==========")
         L.append("")
         
-        # Register process (converting sources to std_logic_vector)
         L.append("    -- Registers")
         L.append("    process(clk) begin")
         L.append("        if rising_edge(clk) then")
         for edge, reg in sorted(self.register_allocator.register_allocation.items(), key=lambda x: reg_sort_key(x[1])):
-            src, _, _ = edge
-            if isinstance(src, CstNode):
-                val = f"std_logic_vector(to_signed({src.value}, DATA_WIDTH))"
-            elif isinstance(src, LoadNode):
-                val = f"{src.mem.name}_dout"
-            elif isinstance(src, MulNode):
-                res = self.resource_allocator.resource_allocation.get(src)
-                val = f"{res.name}_out"
-            elif isinstance(src, AddNode):
-                res = self.resource_allocator.resource_allocation.get(src)
-                val = f"{res.name}_out"
-            L.append(f"            if {reg.name}_en = '1' then {reg.name}_out <= {val}; end if;")
+            if not getattr(reg, 'is_wire', False):
+                src, _, _ = edge
+                if isinstance(src, CstNode):
+                    val = f"std_logic_vector(to_signed({src.value}, DATA_WIDTH))"
+                elif isinstance(src, LoadNode):
+                    val = f"{src.mem.name}_dout"
+                elif isinstance(src, MulNode):
+                    res = self.resource_allocator.resource_allocation.get(src)
+                    val = f"{res.name}_out"
+                elif isinstance(src, AddNode):
+                    res = self.resource_allocator.resource_allocation.get(src)
+                    val = f"{res.name}_out"
+                elif isinstance(src, VarLoadNode):
+                    res = self.resource_allocator.resource_allocation.get(src)
+                    val = f"{res.name}_reg"
+                L.append(f"            if {reg.name}_en = '1' then {reg.name}_out <= {val}; end if;")
+        
+        L.append("")
+        L.append("            -- Update Variable Registers")
+        for var_res in sorted(self.all_vars, key=lambda v: v.name):
+            L.append(f"            if {var_res.name}_en = '1' then")
+            # The multiplexer for this variable data
+            mux_name = f"Mux_{var_res.name}_data"
+            L.append(f"                {var_res.name}_reg <= {mux_name}_out;")
+            L.append("            end if;")
         L.append("        end if;")
         L.append("    end process;")
         L.append("")
@@ -242,7 +311,9 @@ class VHDLGenerator:
             L.append(f"    with {mux.name}_sel select")
             L.append(f"        {mux.name}_out <=")
             for i, inp in enumerate(mux.inputs):
-                L.append(f"            {inp.name}_out when \"{i:0{width}b}\",")
+                # Resolve signal name dynamically (since inp can be Reg, Res, or Cst)
+                val = self.get_signal_name(inp)
+                L.append(f"            {val} when \"{i:0{width}b}\",")
             L.append("            (others => '0') when others;")
         
         # Memory connections (both read and write address from same mux)
@@ -294,8 +365,8 @@ class VHDLGenerator:
         L.append("    Design_inst: entity work.Design port map (clk => clk, rst => rst, state_out => state_out, done => done);")
         L.append("")
         L.append("    process begin")
-        L.append("        rst <= '1'; wait for CLK_PERIOD * 2;")
-        L.append(f"        rst <= '0'; wait for CLK_PERIOD * {self.max_time + 4};")
+        L.append("        rst <= '1'; wait for CLK_PERIOD * 1;")
+        L.append(f"        rst <= '0'; wait for CLK_PERIOD * {self.max_time + 3};")
         L.append("        wait;")
         L.append("    end process;")
         L.append("end Behavioral;")
