@@ -23,11 +23,8 @@ def main():
         mem=ram,
         addr=Cst(3),
         val=Add(
-            left=Mul(
-                left=Load(ram, Cst(0)),
-                right=Load(ram, Cst(1))
-            ),
-            right=Load(ram, Cst(2))
+            left=Add(Cst(1), Cst(2)),
+            right=Cst(4)
         )
     )
     
@@ -46,7 +43,7 @@ def main():
     # 4. Scheduling
     print("\n--- Running Scheduler ---")
     scheduler = Scheduler(converter.cdfg)
-    schedule = scheduler.schedule()
+    schedule = scheduler.schedule(chain=True)
     print(schedule)
     
     print("\nScheduled Times:")
@@ -76,7 +73,7 @@ def main():
 
     # 6. Register Allocation
     print("\n--- Running Register Allocation ---")
-    reg_allocator = RegisterAllocator(converter.cdfg)
+    reg_allocator = RegisterAllocator(converter.cdfg, schedule)
     registers = reg_allocator.allocate()
     print("Register Allocation:")
     for edge, reg in registers.items():
