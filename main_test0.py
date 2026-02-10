@@ -23,15 +23,15 @@ def main():
         mem=ram,
         addr=Cst(3),
         val=Add(
-            left=Add(Cst(1), Cst(2)),
-            right=Cst(4)
+            left=Add(Cst(1), Cst(1)),
+            right=Add(Cst(1), Cst(1))
         )
     )
     
     # 3. CDFG Generation
     print("\n--- Generating CDFG ---")
     converter = ASTToCDFG()
-    converter.convert(program)
+    converter.convert(program, com_sub_el=False)
     print(f"CDFG generated with {len(converter.cdfg.nodes)} nodes.")
     
     # 3b. CDFG Visualization
